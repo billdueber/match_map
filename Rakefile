@@ -17,8 +17,10 @@ Jeweler::Tasks.new do |gem|
   gem.name = "patternmap"
   gem.homepage = "http://github.com/billdueber/patternmap"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = "A multimap that allows keys to match regex patterns"
+  gem.description = %Q{PatternMap is a map representing key=>value pairs but where 
+    (a) a query argument can match more than one key, and (b) the argument is compraed to the key
+    using #===, meaning you can use regex patterns as keys}
   gem.email = "bill@dueber.com"
   gem.authors = ["Bill Dueber"]
   # dependencies defined in Gemfile

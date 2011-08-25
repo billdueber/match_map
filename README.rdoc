@@ -1,6 +1,48 @@
-= patternmap
+= PatternMap -- a multimap where key matching is based on regular expressions
 
-Description goes here.
+    require 'patternmap'
+    
+    pm = PatternMap.new
+    pm['a'] = 'string'
+    pm[/a/] = 'apat'
+    pm[/b/] = ['bpat1', 'bpat2']
+    pm[/.+b/] = 'bpat3'
+    
+    pm['a'] #=> ['string', 'apat'] # order *not* guaranteed
+    pm['aa']  #=> ['apat']
+    pm['b']   #=> ['bpat1', 'bpat2']
+    pm['cob']  #=> ['bpat1', 'bpat2', 'bpat3'] # flattened one level!!!
+    pm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3']
+    pm['c']    #=> [] # no match
+    
+    pm.optimize  # hopefully speed up access
+    pm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3'] # no change
+    
+    pm[/a(b+)/] = Proc.new {|m| [m[1].size]}
+    
+
+A PatternMap is a hash-like with the following properties:
+
+  * keys can be strings or regular expressions
+  * keys cannot be (exactly) repeated
+  * values can be scalars, arrays, or Proc objects
+  * an argument to #[] is always treated as a string
+  * arguments are compared to keys based on #===
+  * a call to #[] always returns an array of values ([] on fail)
+
+The idea is that you can set up a bunch of (possibly overlapping) patterns, each of which is associated with one or more values, and easily get back all the values for those patterns that match the argument. 
+
+
+== Using Proc objects as values
+
+
+
+== Gotchas
+
+  * order of values is not guaranteed! 
+  * Return value is always an array, possibly empty
+  * Return values are flattened one level. So, a => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like a => [[1,2]]
+  
 
 == Contributing to patternmap
  

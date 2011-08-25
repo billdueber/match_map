@@ -6,6 +6,15 @@ class PatternMap < Hash
     @dirty = true
     @pchecks = 0
     @super_regexp = /.?/
+    self.default = []
+  end
+
+  def []= key, val
+    unless key.is_a? Regexp
+      key = Regexp.new('^' + Regexp.escape(key.to_s) + '$')
+    end
+    super
+    @dirty = true
   end
   
   alias_method :old_get, :[]
@@ -18,20 +27,23 @@ class PatternMap < Hash
     end
     rv = []
     self.each_pair do |k,v|
-      rv.push *v if k === arg
+      m = k.match arg
+      if m
+        if v.is_a? Proc
+          processed = v.call m
+          rv.push *processed
+        else
+          rv.push *v
+        end
+      end
       @pchecks += 1
     end
+    rv.uniq!
+    rv.compact!
     return self.default if rv.size == 0
-    return rv.uniq
+    return rv
   end
   
-  def []= key, val
-    unless key.is_a? Regexp
-      key = Regexp.new('^' + Regexp.escape(key.to_s) + '$')
-    end
-    super
-    @dirty = true
-  end
   
   # Do what we can to reduce the number of regexp calls
   # It turns out they're expensive, so if you're going to

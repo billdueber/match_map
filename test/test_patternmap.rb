@@ -13,7 +13,7 @@ describe PatternMap do
     end
     
     it "should return nil" do
-      @h['a'].must_be_nil
+      @h['a'].must_equal []
     end
     
     it "should do no pattern checks despite access attempts" do
@@ -37,7 +37,7 @@ describe PatternMap do
     
     it 'should still return default' do
       @h['a'] = 3
-      @h['c'].must_be_nil
+      @h['c'].must_equal []
       @h.pchecks.must_equal 1
     end
     
@@ -66,8 +66,8 @@ describe PatternMap do
     
     it "uses a single pattern" do
       @h[/.+a/] = 1
-      @h['b'].must_be_nil
-      @h['a'].must_be_nil
+      @h['b'].must_equal []
+      @h['a'].must_equal []
       @h['aa'].must_equal [1]
       @h['era'].must_equal [1]
     end
@@ -103,8 +103,20 @@ describe PatternMap do
       @h[12].must_equal [3] # not 1,2,3
     end
   end
-  
-  
+
+  describe "works with a Proc" do
+    it 'does an echo proc' do
+      @h[/ab+/] = Proc.new {|m| m[0]}
+      @h['ab'].must_equal ['ab']
+    end
+    
+    it 'deals with match data' do
+      @h[/a(b+)/] = Proc.new {|m| [m[0], m[1].size.to_s]}
+      @h[/abb/].sort.must_equal ['abb', '2'].sort
+    end
+    
+  end
+      
   
   describe 'works when optimizing' do
     before do
@@ -116,12 +128,12 @@ describe PatternMap do
     end
     
     it "should do a single uber-check on failure" do
-      @h[3].must_be_nil
+      @h[3].must_equal []
       @h.pchecks.must_equal 1
     end
     
     it "should still get correct results" do
-      @h[3].must_be_nil
+      @h[3].must_equal []
       @h['aa'].must_equal [1]
       @h['ca'].must_equal [1]
       @h['cab'].sort.must_equal [1,2]
@@ -153,80 +165,4 @@ describe PatternMap do
     end
     
   end
-  # 
-  # describe 'benchmark with repeats' do
-  #       
-  #   describe 'unoptimized' do
-  #     
-  #     bench_performance_linear "unoptimized" do |n|
-  #       @h = PatternMap.new
-  #       (1..12).each do |i|
-  #         @h[i] = i % 3
-  #       end
-  #       
-  #       (1..n).each do |i|
-  #         x = @h[i]
-  #       end
-  #     end
-  #     
-  #   end
-  # 
-  #   describe 'optimized' do
-  #      
-  #     bench_performance_linear "optimized" do |n|
-  #       @h = PatternMap.new
-  #        (1..12).each do |i|
-  #          @h[i] = i % 3
-  #        end
-  #       
-  #        @h.optimize
-  # 
-  #       (1..n).each do |i|
-  #         x = @h[i]
-  #       end
-  #       
-  #     end
-  #   end
-  #   
-  #   
-  # end
-  # 
-  # describe 'benchmark no repeats' do
-  #       
-  #   describe 'unoptimized' do
-  #     
-  #     bench_performance_linear "unoptimized" do |n|
-  #       @h = PatternMap.new
-  #       (1..12).each do |i|
-  #         @h[i] = i
-  #       end
-  #       
-  #       (1..n).each do |i|
-  #         x = @h[i]
-  #       end
-  #     end
-  #     
-  #   end
-  # 
-  #   describe 'optimized' do
-  #      
-  #     bench_performance_linear "optimized" do |n|
-  #       @h = PatternMap.new
-  #        (1..12).each do |i|
-  #          @h[i] = i
-  #        end
-  #       
-  #        @h.optimize
-  # 
-  #       (1..n).each do |i|
-  #         x = @h[i]
-  #       end
-  #       
-  #     end
-  #   end
-  #   
-  #   
-  # end
-
-  
 end

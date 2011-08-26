@@ -1,38 +1,38 @@
-= PatternMap -- a multimap where key matching is based on regular expressions
+= TranslatingMap -- a multimap where key matching is based on regular expressions
 
-    require 'patternmap'
+    require 'TranslatingMap'
     
-    pm = PatternMap.new
-    pm['a'] = 'string'
-    pm[/a/] = 'apat'
-    pm[/b/] = ['bpat1', 'bpat2']
-    pm[/.+b/] = 'bpat3'
+    tm = TranslatingMap.new
+    tm['a'] = 'string'
+    tm[/a/] = 'apat'
+    tm[/b/] = ['bpat1', 'bpat2']
+    tm[/.+b/] = 'bpat3'
     
-    pm['a'] #=> ['string', 'apat'] # order *not* guaranteed
-    pm['aa']  #=> ['apat']
-    pm['b']   #=> ['bpat1', 'bpat2']
-    pm['cob']  #=> ['bpat1', 'bpat2', 'bpat3'] # flattened one level!!!
-    pm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3']
-    pm['c']    #=> [] # no match
+    tm['a'] #=> ['string', 'apat'] # order *not* guaranteed
+    tm['aa']  #=> ['apat']
+    tm['b']   #=> ['bpat1', 'bpat2']
+    tm['cob']  #=> ['bpat1', 'bpat2', 'bpat3'] # flattened one level!!!
+    tm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3']
+    tm['c']    #=> [] # no match
     
     # You can also query on multiple values at once:
-    pm[['a', 'aa', 'b']] #=> ['apat', 'string', 'bpat1', 'bpat2']
+    tm[['a', 'aa', 'b']] #=> ['apat', 'string', 'bpat1', 'bpat2']
     
-     %W(a aa b cob cab c).each {|a| puts "#{a} => #{pm[a].inspect}"}
+     %W(a aa b cob cab c).each {|a| puts "#{a} => #{tm[a].inspect}"}
     
-    pm.optimize  # hopefully speed up access
-    pm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3'] # no change
+    tm.optimize  # hopefully speed up access
+    tm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3'] # no change
     
     # Or use a Proc as the value; it gets the match variable as its argument
     
-    pm[/a(b+)/] = Proc.new {|m| [m[1].size]}
-    pm['abbbb'] #=> [4]
+    tm[/a(b+)/] = Proc.new {|m| [m[1].size]}
+    tm['abbbb'] #=> [4]
     
     # As a trick, you can always echo the input value, too
-    pm[/.+/] = Proc.new {|m| m[0]}
+    tm[/.+/] = Proc.new {|m| m[0]}
     
 
-A PatternMap is a hash-like with the following properties:
+A TranslatingMap is a hash-like with the following properties:
 
   * keys can be strings or regular expressions
   * keys cannot be (exactly) repeated
@@ -68,7 +68,7 @@ If neither of these things are true, you will end up doing *more* pattern checks
   * Return values are flattened one level. So, a => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like a => [[1,2]]
   
 
-== Contributing to patternmap
+== Contributing to TranslatingMap
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it

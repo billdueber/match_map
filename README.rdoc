@@ -36,26 +36,30 @@
     tm['miss'] = []
     tm['cab']  = ['AB']
 
-    #...then with echo
-    tm.echo = true
+    #...then with echo = :always
+    tm.echo = :always
     tm['miss'] = ['miss']
     tm['cab']  = ['cab', 'AB']
+    
+    #...and again with echo = :onmiss
+    tm.echo = :onmiss
+    tm['miss'] #=> ['miss'] # because nothing else matched
+    tm['cab']  #=> ['AB']   # because a match was found
 
 
 A TranslatingMap is a hash-like with the following properties:
 
 * keys can be strings or regular expressions
 * keys cannot be repeated
-* values can be scalars, arrays, or Proc objects
+* arguments are compared to keys based on #=== (exact match for string, pattern match for patters)
+* values can be scalars, arrays (treated as multiple values), or Proc objects
 * a scalar argument to #[] is always treated as a string
 * an array argument to #[] is treated as if you want all values for all matches for all array members
-* arguments are compared to keys based on #=== (exact match for string, pattern match for patters)
 * a call to #[] always returns an array of values ([] on fail)
 * the return value from #[] goes through #uniq and #compact (no repeated values, no nil values)
 
 The idea is that you can set up a bunch of (possibly overlapping) patterns, each of which is associated 
 with one or more values, and easily get back all the values for those patterns that match the argument. 
-
 
 == Using Proc objects as values
 
@@ -67,6 +71,13 @@ You can also use a Proc object as a value. It must:
     tm = TranslatingMap.new
     tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2] m[1]}"}
     tm['Dueber, Bill'] #=> ["Bill Dueber"]
+
+== Using echo to always/sometimes get back the argument
+
+There are two common requirements when doing this sort of translation for indexing:
+
+* The raw argument should always appear in the ouput
+* The raw argument should appear in the output only if there are no other matches. 
 
 == Optimizing
 

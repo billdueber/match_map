@@ -1,11 +1,17 @@
 class TranslatingMap < Hash
-  attr_accessor :pchecks, :echo
+  attr_accessor :pchecks
+  attr_reader :echo
   
-  def initialize echo = false
+  def initialize echo = nil
     super [] # set default value as []
     @dirty = true
     @pchecks = 0
     @echo = echo
+  end
+
+  def echo= arg
+    raise RuntimeError.new, "echo value must be :onmiss or :always" unless [:onmiss, :always].include? arg
+    @echo = arg
   end
 
   def []= key, val
@@ -20,8 +26,7 @@ class TranslatingMap < Hash
   
   def [] arg
     rv = []
-    rv.push arg if @echo
-    return rv if self.size == 0
+    rv.push *arg if @echo == :always
     if arg.is_a? Array
       arg.map {|s| inner = self.inner_get(s); rv.push *inner}
       rv.uniq!
@@ -56,7 +61,9 @@ class TranslatingMap < Hash
     end
     rv.uniq!
     rv.compact!
-    return self.default if rv.size == 0
+    if rv.size == 0
+      rv.push arg if @echo == :onmiss
+    end
     return rv
   end
   

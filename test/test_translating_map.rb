@@ -124,22 +124,38 @@ describe TranslatingMap do
   
   describe "works with echo" do
     before do
-      @j  = TranslatingMap.new true # true => echo
+      @j  = TranslatingMap.new
     end
     
     it "echos when empty" do
+      @j['miss'].must_equal [] # no echoing
+      
+      @j.echo = :always
+      @j['miss'].must_equal ['miss']
+      
+      @j.echo = :onmiss
       @j['miss'].must_equal ['miss']
     end
     
     it "echos when not empty" do
       @j[/a/] = 'hello'
+      
+      @j['miss'].must_equal []
+      
+      @j.echo = :always
+      @j['miss'].must_equal ['miss']
       @j['ab'].sort.must_equal ['ab', 'hello'].sort
+      
+      @j.echo = :onmiss
+      @j['miss'].must_equal ['miss']
+      @j['ab'].must_equal ['hello']
+      
     end
     
     it "works with a Proc and echo" do
       tm = TranslatingMap.new
       tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
-      tm.echo = true
+      tm.echo = :always
       tm['Dueber, Bill'].sort.must_equal ["Bill Dueber", 'Dueber, Bill'].sort
     end
     

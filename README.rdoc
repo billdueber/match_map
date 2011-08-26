@@ -18,31 +18,42 @@
     # You can also query on multiple values at once:
     tm[['a', 'aa', 'b']] #=> ['apat', 'string', 'bpat1', 'bpat2']
     
-     %W(a aa b cob cab c).each {|a| puts "#{a} => #{tm[a].inspect}"}
-    
-    tm.optimize  # hopefully speed up access
-    tm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3'] # no change
-    
     # Or use a Proc as the value; it gets the match variable as its argument
     
     tm[/a(b+)/] = Proc.new {|m| [m[1].size]}
     tm['abbbb'] #=> [4]
+
+
+    # In many cases, you can optimize the map and it'll get faster (see below)
+    tm.optimize  # hopefully speed up access
+    tm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3'] # same as before
+
+    # You can set #echo to always return the argument
+    tm = TranslatingMap.new
+    tm.echo = true
+    tm[/ab/] = "AB"
+    tm['miss'] = ['miss']
+    tm['cab']  = ['cab', 'AB']
     
-    # As a trick, you can always echo the input value, too
-    tm[/.+/] = Proc.new {|m| m[0]}
+    
+    
     
 
 A TranslatingMap is a hash-like with the following properties:
 
   * keys can be strings or regular expressions
-  * keys cannot be (exactly) repeated
+  * keys cannot be repeated
   * values can be scalars, arrays, or Proc objects
   * a scalar argument to #[] is always treated as a string
-  * arguments are compared to keys based on #===
+  * an array argument to #[] is treated as if you want all values for all matches for all array members
+  * arguments are compared to keys based on #=== (exact match for string, pattern match for patters)
   * a call to #[] always returns an array of values ([] on fail)
   * the return value from #[] goes through #uniq and #compact (no repeated values, no nil values)
 
-The idea is that you can set up a bunch of (possibly overlapping) patterns, each of which is associated with one or more values, and easily get back all the values for those patterns that match the argument. 
+The idea is that you can set up a bunch of (possibly overlapping) patterns, each of which is associated 
+with one or more values, and easily get back all the values for those patterns that match the argument. 
+
+
 
 
 == Using Proc objects as values

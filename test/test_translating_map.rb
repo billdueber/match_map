@@ -1,9 +1,9 @@
 require 'helper'
 
-describe PatternMap do
+describe TranslatingMap do
 
   before do
-    @h = PatternMap.new
+    @h = TranslatingMap.new
   end
    
   describe "when empty" do
@@ -84,7 +84,7 @@ describe PatternMap do
   
   describe "works with non-pattern keys" do
     before do
-      @h = PatternMap.new
+      @h = TranslatingMap.new
     end
     
     it "is fine with strings" do

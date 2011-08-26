@@ -1,4 +1,4 @@
-class PatternMap < Hash
+class TranslatingMap < Hash
   attr_accessor :pchecks # for testing
   
   def initialize args=nil

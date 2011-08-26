@@ -1,12 +1,11 @@
 class TranslatingMap < Hash
-  attr_accessor :pchecks # for testing
+  attr_accessor :pchecks, :echo
   
-  def initialize args=nil
-    super
+  def initialize echo = false
+    super [] # set default value as []
     @dirty = true
     @pchecks = 0
-    @super_regexp = /.?/
-    self.default = []
+    @echo = echo
   end
 
   def []= key, val
@@ -20,21 +19,24 @@ class TranslatingMap < Hash
   alias_method :old_get, :[]
   
   def [] arg
-    return self.default if self.size == 0
+    rv = []
+    rv.push arg if @echo
+    return rv if self.size == 0
     if arg.is_a? Array
-      rv = []
       arg.map {|s| inner = self.inner_get(s); rv.push *inner}
       rv.uniq!
       rv.compact!
-      return rv
     else
-      return self.inner_get arg
+      inner = self.inner_get arg
+      rv.push *inner
     end
+    return rv
   end
     
   
   def inner_get arg
     arg = arg.to_s
+    rv = []
     unless @dirty
       @pchecks += 1
       return self.default unless @super_regexp.match arg
@@ -96,4 +98,4 @@ class TranslatingMap < Hash
     
     @dirty = false
   end
-end  
+end

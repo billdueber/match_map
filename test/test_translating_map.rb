@@ -116,6 +116,23 @@ describe TranslatingMap do
     end
     
   end
+  
+  describe "works with echo" do
+    before do
+      @j  = TranslatingMap.new true # true => echo
+    end
+    
+    it "echos when empty" do
+      @j['miss'].must_equal ['miss']
+    end
+    
+    it "echos when not empty" do
+      @j[/a/] = 'hello'
+      @j['ab'].sort.must_equal ['ab', 'hello'].sort
+    end
+    
+  end
+    
       
   
   describe 'works when optimizing' do

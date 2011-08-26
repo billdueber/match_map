@@ -15,10 +15,21 @@
     pm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3']
     pm['c']    #=> [] # no match
     
+    # You can also query on multiple values at once:
+    pm[['a', 'aa', 'b']] #=> ['apat', 'string', 'bpat1', 'bpat2']
+    
+     %W(a aa b cob cab c).each {|a| puts "#{a} => #{pm[a].inspect}"}
+    
     pm.optimize  # hopefully speed up access
     pm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3'] # no change
     
+    # Or use a Proc as the value; it gets the match variable as its argument
+    
     pm[/a(b+)/] = Proc.new {|m| [m[1].size]}
+    pm['abbbb'] #=> [4]
+    
+    # As a trick, you can always echo the input value, too
+    pm[/.+/] = Proc.new {|m| m[0]}
     
 
 A PatternMap is a hash-like with the following properties:
@@ -26,20 +37,33 @@ A PatternMap is a hash-like with the following properties:
   * keys can be strings or regular expressions
   * keys cannot be (exactly) repeated
   * values can be scalars, arrays, or Proc objects
-  * an argument to #[] is always treated as a string
+  * a scalar argument to #[] is always treated as a string
   * arguments are compared to keys based on #===
   * a call to #[] always returns an array of values ([] on fail)
+  * the return value from #[] goes through #uniq and #compact (no repeated values, no nil values)
 
 The idea is that you can set up a bunch of (possibly overlapping) patterns, each of which is associated with one or more values, and easily get back all the values for those patterns that match the argument. 
 
 
 == Using Proc objects as values
 
+You can also use a Proc object as a value. It must:
 
+  * take a single argument; the match variable
+  * return a (possibly empty) array of values
+
+== Optimizing
+
+A call to #optimize will speed up access by reducing the number of regular expression checks, assuming the following are true:
+
+  * A significant number of accesses result in no hits, and/or
+  * Some of your keys return the same value(s).
+
+If neither of these things are true, you will end up doing *more* pattern checks, so calling it #optimize might be a tad...er...optimistic. 
 
 == Gotchas
 
-  * order of values is not guaranteed! 
+  * order of values returned is not guaranteed! 
   * Return value is always an array, possibly empty
   * Return values are flattened one level. So, a => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like a => [[1,2]]
   

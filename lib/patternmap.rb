@@ -18,8 +18,22 @@ class PatternMap < Hash
   end
   
   alias_method :old_get, :[]
+  
   def [] arg
     return self.default if self.size == 0
+    if arg.is_a? Array
+      rv = []
+      arg.map {|s| inner = self.inner_get(s); rv.push *inner}
+      rv.uniq!
+      rv.compact!
+      return rv
+    else
+      return self.inner_get arg
+    end
+  end
+    
+  
+  def inner_get arg
     arg = arg.to_s
     unless @dirty
       @pchecks += 1

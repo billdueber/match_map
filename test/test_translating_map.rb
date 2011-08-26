@@ -115,6 +115,11 @@ describe TranslatingMap do
       @h[/abb/].sort.must_equal ['abb', '2'].sort
     end
     
+    it "works with a more complex proc" do
+      tm = TranslatingMap.new
+      tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
+      tm['Dueber, Bill'].must_equal ["Bill Dueber"]
+    end
   end
   
   describe "works with echo" do
@@ -130,6 +135,14 @@ describe TranslatingMap do
       @j[/a/] = 'hello'
       @j['ab'].sort.must_equal ['ab', 'hello'].sort
     end
+    
+    it "works with a Proc and echo" do
+      tm = TranslatingMap.new
+      tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
+      tm.echo = true
+      tm['Dueber, Bill'].sort.must_equal ["Bill Dueber", 'Dueber, Bill'].sort
+    end
+    
     
   end
     

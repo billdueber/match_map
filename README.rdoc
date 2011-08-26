@@ -72,16 +72,16 @@ You can also use a Proc object as a value. It must:
 
 A call to #optimize will speed up access by reducing the number of regular expression checks, assuming the following are true:
 
-  * A significant number of accesses result in no hits, and/or
-  * Some of your keys return the same value(s).
+* A significant number of accesses result in no hits, and/or
+* Some of your keys return the same value(s).
 
 If neither of these things are true, you will end up doing *more* pattern checks, so calling it #optimize might be a tad...er...optimistic. 
 
 == Gotchas
 
-  * order of values returned is not guaranteed! 
-  * Return value is always an array, possibly empty
-  * Return values are flattened one level. So, a => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like a => [[1,2]]
+* order of values returned is not guaranteed! 
+* Return value is always an array, possibly empty
+* Return values are flattened one level. So, a => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like a => [[1,2]]
   
 
 == Contributing to TranslatingMap

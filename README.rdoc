@@ -1,6 +1,6 @@
 = TranslatingMap -- a multimap where key matching is based on regular expressions
 
-    require 'TranslatingMap'
+    require 'translating_map'
     
     tm = TranslatingMap.new
     tm['a'] = 'string'

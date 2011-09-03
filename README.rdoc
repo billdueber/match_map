@@ -71,6 +71,8 @@ You can also use a Proc object as a value. It must:
     tm = TranslatingMap.new
     tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2] m[1]}"}
     tm['Dueber, Bill'] #=> ["Bill Dueber"]
+    
+
 
 == Using echo to always/sometimes get back the argument
 

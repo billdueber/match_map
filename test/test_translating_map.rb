@@ -120,6 +120,12 @@ describe TranslatingMap do
       tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
       tm['Dueber, Bill'].must_equal ["Bill Dueber"]
     end
+    
+    it "calls the Proc for string argument, even though that kind of an abuse" do
+      tm = TranslatingMap.new
+      tm['a'] = Proc.new {|m| [m[0] + 'bbb']}
+      tm['a'].must_equal ['abbb']
+    end
   end
   
   describe "works with echo" do

@@ -1,9 +1,9 @@
 require 'helper'
 
-describe TranslatingMap do
+describe MatchMap do
 
   before do
-    @h = TranslatingMap.new
+    @h = MatchMap.new
   end
    
   describe "when empty" do
@@ -84,7 +84,7 @@ describe TranslatingMap do
   
   describe "works with non-pattern keys" do
     before do
-      @h = TranslatingMap.new
+      @h = MatchMap.new
     end
     
     it "is fine with strings" do
@@ -116,21 +116,21 @@ describe TranslatingMap do
     end
     
     it "works with a more complex proc" do
-      tm = TranslatingMap.new
-      tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
-      tm['Dueber, Bill'].must_equal ["Bill Dueber"]
+      mm = MatchMap.new
+      mm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
+      mm['Dueber, Bill'].must_equal ["Bill Dueber"]
     end
     
     it "calls the Proc for string argument, even though that kind of an abuse" do
-      tm = TranslatingMap.new
-      tm['a'] = Proc.new {|m| [m[0] + 'bbb']}
-      tm['a'].must_equal ['abbb']
+      mm = MatchMap.new
+      mm['a'] = Proc.new {|m| [m[0] + 'bbb']}
+      mm['a'].must_equal ['abbb']
     end
   end
   
   describe "works with echo" do
     before do
-      @j  = TranslatingMap.new
+      @j  = MatchMap.new
     end
     
     it "echos when empty" do
@@ -159,10 +159,10 @@ describe TranslatingMap do
     end
     
     it "works with a Proc and echo" do
-      tm = TranslatingMap.new
-      tm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
-      tm.echo = :always
-      tm['Dueber, Bill'].sort.must_equal ["Bill Dueber", 'Dueber, Bill'].sort
+      mm = MatchMap.new
+      mm[/^(.+),\s*(.+)$/] = Proc.new {|m| "#{m[2]} #{m[1]}"}
+      mm.echo = :always
+      mm['Dueber, Bill'].sort.must_equal ["Bill Dueber", 'Dueber, Bill'].sort
     end
     
     

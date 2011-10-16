@@ -1,4 +1,4 @@
-class TranslatingMap < Hash
+class MatchMap < Hash
   attr_accessor :pchecks
   attr_reader :echo
   

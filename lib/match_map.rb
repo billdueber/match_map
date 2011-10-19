@@ -1,12 +1,13 @@
-class MatchMap < Hash
-  attr_accessor :pchecks
+class MatchMap
+  attr_accessor :pchecks, :default
   attr_reader :echo
   
   def initialize echo = nil
-    super [] # set default value as []
-    @dirty = true
+    @default = nil # default miss value is nil
     @pchecks = 0
     @echo = echo
+    @keys = []
+    @map = {}
   end
 
   def echo= arg
@@ -15,58 +16,57 @@ class MatchMap < Hash
   end
 
   def []= key, val
-    unless key.is_a? Regexp
-      key = Regexp.new('^' + Regexp.escape(key.to_s) + '$')
-    end
-    super
-    @dirty = true
+    @map[key] = val
+    @keys.push key unless @keys.include? key
   end
-  
-  alias_method :old_get, :[]
   
   def [] arg
     rv = []
     rv.push *arg if @echo == :always
     if arg.is_a? Array
       arg.map {|s| inner = self.inner_get(s); rv.push *inner}
-      rv.uniq!
-      rv.compact!
     else
       inner = self.inner_get arg
       rv.push *inner
+    end
+    rv.uniq!
+    rv.compact!
+    if rv.size == 0
+      if @echo == :onmiss
+        return [*arg]
+      else
+        return @default
+      end
     end
     return rv
   end
     
   
   def inner_get arg
-    arg = arg.to_s
+    # unless @dirty
+    #   @pchecks += 1
+    #   return self.default unless @super_regexp.match arg
+    # end
     rv = []
-    unless @dirty
-      @pchecks += 1
-      return self.default unless @super_regexp.match arg
-    end
-    rv = []
-    self.each_pair do |k,v|
-      m = k.match arg
+    @keys.each do |k|
+      if k.is_a? Regexp
+        m = k.match arg.to_s
+      else
+        m = (k == arg) ? arg : false
+      end
       if m
+        v = @map[k]
         if v.is_a? Proc
-          processed = v.call m
-          rv.push *processed
+          processed = v.call(m)
+          rv.push *processed if processed
         else
           rv.push *v
         end
       end
-      @pchecks += 1
-    end
-    rv.uniq!
-    rv.compact!
-    if rv.size == 0
-      rv.push arg if @echo == :onmiss
     end
     return rv
   end
-  
+        
   
   # Do what we can to reduce the number of regexp calls
   # It turns out they're expensive, so if you're going to

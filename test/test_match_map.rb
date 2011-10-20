@@ -43,6 +43,18 @@ describe MatchMap do
     
   end
 
+
+  describe "has/delete key" do
+    it "detects key" do
+      @h['a'] = 'a'
+      @h['b'] = 'b'
+      @h.has_key?('a').must_equal true
+      @h.has_key?('c').must_equal false
+      @h.delete('a')
+      @h.has_key?('a').must_equal false
+      @h['a'].must_equal @h.default
+    end
+  end
   
   describe "works with pattern keys" do
     

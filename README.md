@@ -47,7 +47,15 @@ mm['cab']  = ['cab', 'AB']
 mm.echo = :onmiss
 mm['miss'] #=> ['miss'] # because nothing else matched
 mm['cab']  #=> ['AB']   # because a match was found
+
+# Need to ditch a key?
+if mm.has_key? /ab/ 
+  mm.delete /ab/
+end
+
 ```
+
+
 
 A MatchMap is a hash-like with the following properties:
 

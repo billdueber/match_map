@@ -66,6 +66,15 @@ class MatchMap
     end
     return rv
   end
+  
+  def has_key? key
+    @map.has_key? key
+  end
+  
+  def delete key
+    @map.delete(key)
+    @keys.delete(key)
+  end
         
   
   # Do what we can to reduce the number of regexp calls

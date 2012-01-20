@@ -1,12 +1,12 @@
 # A hash-like object that tries to match an argument against
-# *all* keys (using == for non-Regexp keys and pattern matching 
+# *all* keys (using == for non-Regexp keys and pattern matching
 # for Regexp keys)
 
 class MatchMap
-  
+
   attr_accessor :default
   attr_reader   :echo
-  
+
   def initialize echo = nil
     @default = nil # default miss value is nil
     @echo = echo
@@ -23,7 +23,7 @@ class MatchMap
     @map[key] = val
     @keys.push key unless @keys.include? key
   end
-  
+
   def [] arg
     rv = []
     rv.push *arg if @echo == :always
@@ -44,8 +44,8 @@ class MatchMap
     end
     return rv
   end
-    
-  
+
+
   def inner_get arg
     rv = []
     @keys.each do |k|
@@ -66,26 +66,26 @@ class MatchMap
     end
     return rv
   end
-  
+
   def has_key? key
     @map.has_key? key
   end
-  
+
   def delete key
     @map.delete(key)
     @keys.delete(key)
   end
-        
-  
+
+
   # # Do what we can to reduce the number of regexp calls
   # # It turns out they're expensive, so if you're going to
   # # be using a map a few times, it's worth the effort.
-  # # 
+  # #
   # def optimize
   #   return unless @dirty
   #   # Make a super-regexp that matches everything
   #   @super_regexp = Regexp.union self.keys
-  #   
+  #
   #   # Build an inverted set for cases where a single value or set of
   #   # values map to multiple patterns
   #   #
@@ -96,9 +96,9 @@ class MatchMap
   #     inverted[v] << p
   #   end
   #   # Now, find places where values are repeated and just build
-  #   # a single larger regexp for it. e.g., if 
+  #   # a single larger regexp for it. e.g., if
   #   # /a/ => 1 and /b/ => 1, then replace them both with
-  #   # /a|b/ => 1. 
+  #   # /a|b/ => 1.
   #   inverted.each_pair do |vals, patterns|
   #     next unless patterns.size > 1
   #     newpat = Regexp.union patterns
@@ -111,6 +111,6 @@ class MatchMap
   #     end
   #     self[newpat] = vals
   #   end
-  #   
+  #
   # end
 end

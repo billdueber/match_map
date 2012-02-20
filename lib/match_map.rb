@@ -4,15 +4,9 @@
 
 class MatchMap
 
-  attr_accessor :default
+  attr_accessor :default, :checks
   attr_reader   :echo
 
-  def initialize echo = nil
-    @default = nil # default miss value is nil
-    @echo = echo
-    @keys = []
-    @map = {}
-  end
 
   def echo= arg
     raise RuntimeError.new, "echo value must be :onmiss or :always" unless [:onmiss, :always].include? arg
@@ -22,6 +16,11 @@ class MatchMap
   def []= key, val
     @map[key] = val
     @keys.push key unless @keys.include? key
+    set_attrs key, val
+  end
+  
+  def set_attrs key, val
+    @attrs[key] = {:regexkey => (key.is_a? Regexp), :procval => (val.is_a? Proc)}
   end
 
   def [] arg
@@ -45,18 +44,23 @@ class MatchMap
     return rv
   end
 
+  def optimized_inner_get arg
+    @checks['optimized'] += 1
+    return [@map[arg]]
+  end
 
-  def inner_get arg
+  def normal_inner_get arg
     rv = []
     @keys.each do |k|
-      if k.is_a? Regexp
+      @checks['normal'] += 1
+      if @attrs[k][:regexkey]
         m = k.match arg.to_s
       else
         m = (k == arg) ? arg : false
       end
       if m
         v = @map[k]
-        if v.is_a? Proc
+        if @attrs[k][:procval]
           processed = v.call(m)
           rv.push *processed if processed
         else
@@ -74,6 +78,27 @@ class MatchMap
   def delete key
     @map.delete(key)
     @keys.delete(key)
+  end
+
+  def initialize hash = {}
+    @default = nil # default miss value is nil
+    @echo = echo
+    @keys = hash.keys
+    @map = hash
+    @attrs = {}
+    @map.each_pair {|k, v| set_attrs k, v}
+    @checks = {'normal' => 0, 'optimized' => 0}
+    define_singleton_method :inner_get, method(:normal_inner_get)
+  end
+
+  def optimize
+    @map.each_pair do |k,v|
+      if k.is_a? Regexp or v.is_a? Proc
+        define_singleton_method :inner_get, method(:normal_inner_get)
+        return
+      end
+    end
+    define_singleton_method :inner_get, method(:optimized_inner_get)
   end
 
 end

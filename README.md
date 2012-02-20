@@ -80,8 +80,8 @@ Here's part of a map for library call numbers:
 
 ```ruby
 mm = MatchMap.new
-mm[/H/] = 'Social Science'
-mm[/HA/] = 'Statistics'
+mm[/^H/] = 'Social Science'
+mm[/^HA/] = 'Statistics'
 mm['HA37 .P27 P16'] #=> ['Social Science', 'Statistics']
 ```
 

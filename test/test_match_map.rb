@@ -191,9 +191,10 @@ describe MatchMap do
   describe 'Flattens correctly' do
     before do
       @h = MatchMap.new
-      @h['cc'] = 1
-      @h[/c/] = [2, 3]
+      @h[/c/] = 1
+      @h[/cc/] = [2, 3]
       @h[/ccc/] = [[4,5, 6]]
+      @h[/cccc/] = [7, 8, [9, 10]]
     end
     
     it 'flattens one level' do
@@ -201,7 +202,11 @@ describe MatchMap do
     end
     
     it "doesn't over-flatten" do 
-      @h['ccc'].must_equal [2, 3, [4,5,6]]
+      @h['ccc'].must_equal [1, 2, 3, [4,5,6]]
+    end
+    
+    it 'allows mixed depth' do
+      @h['cccc'].must_equal [1, 2, 3, [4, 5, 6], 7, 8, [9, 10]]
     end
   end
   

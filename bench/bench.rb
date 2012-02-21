@@ -20,9 +20,10 @@ end
 # @mm2[/a/] = 'AAA'
 
 iters = 100_000
-
 puts "Testing #{iters} accesses"
-Benchmark.bm do |x|
+
+method = (defined? JRUBY_VERSION) ? :bmbm : :bm
+Benchmark.send(method) do |x|
 
   x.report('hash            ') do
     1..iters.times do

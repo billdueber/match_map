@@ -188,49 +188,21 @@ describe MatchMap do
     
   end
       
+  describe 'Flattens correctly' do
+    before do
+      @h = MatchMap.new
+      @h['cc'] = 1
+      @h[/c/] = [2, 3]
+      @h[/ccc/] = [[4,5, 6]]
+    end
     
-      
+    it 'flattens one level' do
+      @h['cc'].must_equal [1,2,3]
+    end
+    
+    it "doesn't over-flatten" do 
+      @h['ccc'].must_equal [2, 3, [4,5,6]]
+    end
+  end
   
-  # describe 'works when optimizing' do
-  #   before do
-  #     @h[/a/] = 1
-  #     @h[/b/] = 2
-  #     @h[/c/] = 1
-  #     @h[/d/] = 2
-  #     @h.optimize
-  #   end
-  #   
-  #   it "should still get correct results" do
-  #     @h[3].must_equal []
-  #     @h['aa'].must_equal [1]
-  #     @h['ca'].must_equal [1]
-  #     @h['cab'].must_equal [1,2]
-  #   end
-  #   
-  # end
-  
-  # describe "does correct number of checks when optimizing" do
-  #   before do
-  #     @h[/a/] = 1
-  #     @h[/b/] = 2
-  #     @h[/c/] = 1
-  #     @h[/d/] = 2
-  #     @h.optimize
-  #   end
-  #   
-  #   it "does a single check on miss" do
-  #     @h['1']
-  #     @h.pchecks.must_equal 1
-  #   end
-  #   
-  #   it "should optimize away common values" do
-  #     @h.size.must_equal 2
-  #   end
-  #   
-  #   it "reduced number of checks" do
-  #     @h['abcd']
-  #     @h.pchecks.must_equal 3 
-  #   end
-  #   
-  # end
 end

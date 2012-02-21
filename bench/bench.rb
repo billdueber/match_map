@@ -1,7 +1,5 @@
 require 'benchmark'
 load '../lib/match_map.rb'
-load 'mmopt.rb'
-require 'pp'
 
 h5 = {
   'a' => 'A',
@@ -9,21 +7,17 @@ h5 = {
   'c' => 'C',
   'd' => 'D',
   'e' => 'E',
-  # /a/ => 'AAA'
+  /a/ => 'AAA'
 }
 
 @mm = MatchMap.new
-@mmo = MatchMapOpt.new
-h5.each_pair {|k,v| @mm[k] = v; @mmo[k] = v}
+h5.each_pair {|k,v| @mm[k] = v}
 
 @mm2 = MatchMap.new()
-@mmo2 = MatchMapOpt.new()
 (1..20).each do |i|
   @mm2[i] = i*2
-  @mmo2[i] = i * 2
 end
-# h20[/a/] = 'AAA'
-
+@mm2[/a/] = 'AAA'
 
 iters = 100_000
 
@@ -42,8 +36,9 @@ Benchmark.bm do |x|
   end
   
   x.report('optimized 5 keys') do
+    @mm.optimize
     1..iters.times do
-      y = @mmo['a']
+      y = @mm['a']
     end
   end
 
@@ -55,8 +50,9 @@ Benchmark.bm do |x|
   
   
   x.report('optimized 20 keys') do
+    @mm2.optimize
      1..iters.times do
-       y = @mmo2['a']
+       y = @mm2['a']
      end
    end
 

@@ -4,7 +4,8 @@
 
 class MatchMap
 
-  attr_accessor :default, :checks
+  # 
+  attr_accessor :default
   attr_reader   :echo
 
 
@@ -45,22 +46,20 @@ class MatchMap
   end
 
   def optimized_inner_get arg
-    @checks['optimized'] += 1
     return [@map[arg]]
   end
 
   def normal_inner_get arg
     rv = []
     @keys.each do |k|
-      @checks['normal'] += 1
-      if @attrs[k][:regexkey]
+      if k.is_a? Regexp
         m = k.match arg.to_s
       else
         m = (k == arg) ? arg : false
       end
       if m
         v = @map[k]
-        if @attrs[k][:procval]
+        if v.is_a? Proc
           processed = v.call(m)
           rv.push *processed if processed
         else
@@ -87,7 +86,6 @@ class MatchMap
     @map = hash
     @attrs = {}
     @map.each_pair {|k, v| set_attrs k, v}
-    @checks = {'normal' => 0, 'optimized' => 0}
     define_singleton_method :inner_get, method(:normal_inner_get)
   end
 

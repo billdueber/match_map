@@ -1,5 +1,5 @@
 require 'benchmark'
-load '../lib/match_map.rb'
+require 'match_map'
 
 h5 = {
   'a' => 'A',
@@ -7,7 +7,7 @@ h5 = {
   'c' => 'C',
   'd' => 'D',
   'e' => 'E',
-  /a/ => 'AAA'
+  # /a/ => 'AAA'
 }
 
 @mm = MatchMap.new
@@ -17,10 +17,11 @@ h5.each_pair {|k,v| @mm[k] = v}
 (1..20).each do |i|
   @mm2[i] = i*2
 end
-@mm2[/a/] = 'AAA'
+# @mm2[/a/] = 'AAA'
 
 iters = 100_000
 
+puts "Testing #{iters} accesses"
 Benchmark.bm do |x|
 
   x.report('hash            ') do

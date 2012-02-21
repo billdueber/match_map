@@ -34,6 +34,12 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
+desc "Run a quick benchmark"
+task :bench do
+  $: << 'lib'
+  load 'bench/bench.rb'
+end
+
 task :default => :test
 
 require 'yard'

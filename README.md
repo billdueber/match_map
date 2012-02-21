@@ -158,6 +158,20 @@ mm['cab']  #=> ['AB']   # because a match was found
 
 Note that the `default` value will never be added to the output if `echo` is set.
 
+## Optimizing
+
+You can call `mm.optimize!` to attempt to optimize a MatchMap where none of the keys are regular expressions
+and none of the values are Proc objects for a significant speed increase (run `rake bench` for an idea
+of how much faster). This allows you to take advantage of all the differences between MatchMap and a regular
+hash (pass multiple arguments, flatten return values, echoing, etc.) while remaining an O(1) operation (instead
+of a O(n) for the standard, try-to-match-each-key-in-turn algorithm). 
+
+Note that a call to `#optimize!` actually picks the best algorithm for that particular map, so if you have a simple map,
+call `#optmize!`, and add a regular-expression key, another call to `#optmize!` is required to start using the 
+regular algorithm again. 
+
+Obviously, only call `#optimize!` when you're sure you won't be modifying the map anymore. 
+
 ## Gotchas
 
 * Like a hash, repeated assignment to the same key results in a replacement. So `mm[/a/] = 'a'; mm[/a/] = 'A'` will give `mm['a'] #=> ['A']`

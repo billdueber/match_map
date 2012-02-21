@@ -9,7 +9,9 @@ rescue Bundler::BundlerError => e
 end
 require 'minitest/spec'
 require 'minitest/benchmark'
-begin; require 'turn'; rescue LoadError; end
+if RUBY_VERSION =~ /^1.9/
+  begin; require 'turn'; rescue LoadError; end
+end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))

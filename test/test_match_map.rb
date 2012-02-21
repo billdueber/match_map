@@ -119,10 +119,13 @@ describe MatchMap do
       mm['Dueber, Bill'].must_equal ["Bill Dueber"]
     end
     
-    it "calls the Proc for string argument, even though that kind of an abuse" do
+    it "calls the Proc for string argument, even though that is kind of an abuse" do
       mm = MatchMap.new
-      mm['a'] = Proc.new {|m| [m[0] + 'bbb']}
+      mm['a'] = Proc.new {|m| [(m + 'bbb')]}
       mm['a'].must_equal ['abbb']
+      
+      mm[/b(.*)/] = Proc.new {|m| [m[1]]}
+      mm['b123'].must_equal ['123']
     end
   end
   

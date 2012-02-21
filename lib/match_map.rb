@@ -86,17 +86,20 @@ class MatchMap
     @map = hash
     @attrs = {}
     @map.each_pair {|k, v| set_attrs k, v}
-    define_singleton_method :inner_get, method(:normal_inner_get)
+    singleton_class = class << self; self; end
+    singleton_class.send(:define_method, :inner_get, method(:normal_inner_get))    
+    # define_singleton_method :inner_get, method(:normal_inner_get)
   end
 
   def optimize!
+    singleton_class = class << self; self; end
     @map.each_pair do |k,v|
       if k.is_a? Regexp or v.is_a? Proc
-        define_singleton_method :inner_get, method(:normal_inner_get)
+        singleton_class.send(:define_method, :inner_get, method(:normal_inner_get))
         return
       end
     end
-    define_singleton_method :inner_get, method(:optimized_inner_get)
+    singleton_class.send(:define_method, :inner_get, method(:optimized_inner_get))
   end
 
 end

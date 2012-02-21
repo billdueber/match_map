@@ -120,8 +120,10 @@ Here's a quick example to show how it works
 
 You can also use a Proc object as a value. It must:
 
-* take a single argument; the match variable
+* take a single argument; the match variable (if your key was a Regexp) or the string matched
 * return a (possibly empty) _array of values_
+
+It doesn't make a lot of sense to use a Proc value if your key is just a scalar, but it's possible.
 
 This can be abused, of course, but can be useful. Here's a simple example that reverses the order of a comma-delimited duple. 
 

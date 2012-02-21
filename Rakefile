@@ -14,13 +14,14 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "patternmap"
-  gem.homepage = "http://github.com/billdueber/patternmap"
+  gem.required_ruby_version = '>= 1.9.0' # due to use of define_singleton_method in optimize
+  gem.name = "match_map"
+  gem.homepage = "http://github.com/billdueber/match_map"
   gem.license = "MIT"
   gem.summary = "A multimap that allows keys to match regex patterns"
-  gem.description = %Q{PatternMap is a map representing key=>value pairs but where 
+  gem.description = %Q{MatchMap is a map representing key=>value pairs but where 
     (a) a query argument can match more than one key, and (b) the argument is compraed to the key
-    using #===, meaning you can use regex patterns as keys}
+    such that you can use regex patterns as keys}
   gem.email = "bill@dueber.com"
   gem.authors = ["Bill Dueber"]
   # dependencies defined in Gemfile

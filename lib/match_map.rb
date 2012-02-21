@@ -89,7 +89,7 @@ class MatchMap
     define_singleton_method :inner_get, method(:normal_inner_get)
   end
 
-  def optimize
+  def optimize!
     @map.each_pair do |k,v|
       if k.is_a? Regexp or v.is_a? Proc
         define_singleton_method :inner_get, method(:normal_inner_get)

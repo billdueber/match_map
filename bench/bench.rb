@@ -38,7 +38,7 @@ Benchmark.send(method) do |x|
   end
   
   x.report('optimized 5 keys') do
-    @mm.optimize
+    @mm.optimize!
     1..iters.times do
       y = @mm['a']
     end
@@ -52,7 +52,7 @@ Benchmark.send(method) do |x|
   
   
   x.report('optimized 20 keys') do
-    @mm2.optimize
+    @mm2.optimize!
      1..iters.times do
        y = @mm2['a']
      end

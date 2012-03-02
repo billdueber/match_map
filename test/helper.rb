@@ -10,7 +10,12 @@ end
 require 'minitest/spec'
 require 'minitest/benchmark'
 if RUBY_VERSION =~ /^1.9/
-  begin; require 'turn'; rescue LoadError; end
+  begin
+    require 'turn/autorun'
+    f = ENV['format']
+    Turn.config.format = f.to_sym
+  rescue LoadError
+  end
 end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))

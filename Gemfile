@@ -14,5 +14,11 @@ group :development do
   gem "minitest", ">= 0"
   gem "bundler", "~> 1.0.0"
   gem "jeweler", "~> 1.6.4"
+end
+
+# Don't require 'turn' to format tests, but use it if you have it
+begin
+  require 'turn'
   gem 'turn', '>=0.9.3'
+rescue LoadError
 end

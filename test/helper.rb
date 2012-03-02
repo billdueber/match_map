@@ -12,8 +12,8 @@ require 'minitest/benchmark'
 if RUBY_VERSION =~ /^1.9/
   begin
     require 'turn/autorun'
-    f = ENV['format']
-    Turn.config.format = f.to_sym
+    # f = ENV['format'] ||  'progress'
+    # Turn.config.format = f.to_sym if f
   rescue LoadError
   end
 end

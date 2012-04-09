@@ -9,14 +9,14 @@ rescue Bundler::BundlerError => e
 end
 require 'minitest/spec'
 require 'minitest/benchmark'
-if RUBY_VERSION =~ /^1.9/
-  begin
-    require 'turn/autorun'
-    # f = ENV['format'] ||  'progress'
-    # Turn.config.format = f.to_sym if f
-  rescue LoadError
-  end
-end
+# if RUBY_VERSION =~ /^1.9/
+#   begin
+#     require 'turn/autorun'
+#     # f = ENV['format'] ||  'progress'
+#     # Turn.config.format = f.to_sym if f
+#   rescue LoadError
+#   end
+# end
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))

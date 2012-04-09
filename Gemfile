@@ -17,8 +17,8 @@ group :development do
 end
 
 # Don't require 'turn' to format tests, but use it if you have it
-begin
-  require 'turn'
-  gem 'turn', '>=0.9.3'
-rescue LoadError
-end
+# begin
+#   require 'turn'
+#   gem 'turn', '>=0.9.3'
+# rescue LoadError
+# end

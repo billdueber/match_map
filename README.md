@@ -178,7 +178,7 @@ Obviously, only call `#optimize!` when you're sure you won't be modifying the ma
 ## Gotchas
 
 * Like a hash, repeated assignment to the same key results in a replacement. So `mm[/a/] = 'a'; mm[/a/] = 'A'` will give `mm['a'] #=> ['A']`
-* Return values are flattened one level. So, a => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like `m['a'] = [[1,2]]`
+* Return values are flattened one level. So, /a/ => 1 and b => [2,3], the something that matches both will return [1,2,3]. If you really want to return an array, you need to do something like `m['a'] = [[1,2]]`
   
 
 ## Contributing to MatchMap

@@ -6,6 +6,11 @@ source "http://rubygems.org"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 
+if RUBY_VERSION =~ /^1.8/
+  gem 'hashery'
+end
+
+
 group :documentation do
   gem "yard", "~> 0.6.0"
 end  

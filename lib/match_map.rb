@@ -4,21 +4,45 @@
 
 class MatchMap
 
-  # 
   attr_accessor :default
   attr_reader   :echo
 
+  if RUBY_VERSION =~ /^1\.9/
+    require 'match_map/match_map_19'
+    include MatchMapIncludes::OnePointNine
+  else 
+    require 'match_map/match_map_18'    
+    include MatchMapIncludes::OnePointEight
+  end
+  
+  def initialize h = {}
+    @default = nil # default miss value is nil
+    @attrs = {}
+    # Set up the appripriate @map and define which inner_get to use
+    self.setup h
+    
+    # Initialize with the given hash
+    h.each_pair do |k, v| 
+      self[k] = v
+    end  
+    
+  end
+
+  def delete key
+    @map.delete(key)
+  end
+
+
+  def []= key, val
+    @map[key] = val
+    set_attrs key, val
+  end
 
   def echo= arg
     raise RuntimeError.new, "echo value must be :onmiss or :always" unless [:onmiss, :always].include? arg
     @echo = arg
   end
 
-  def []= key, val
-    @map[key] = val
-    @keys.push key unless @keys.include? key
-    set_attrs key, val
-  end
   
   def set_attrs key, val
     @attrs[key] = {:regexkey => (key.is_a? Regexp), :procval => (val.is_a? Proc)}
@@ -51,7 +75,7 @@ class MatchMap
 
   def normal_inner_get arg
     rv = []
-    @keys.each do |k|
+    @map.keys.each do |k|
       if k.is_a? Regexp
         m = k.match arg.to_s
       else
@@ -74,22 +98,7 @@ class MatchMap
     @map.has_key? key
   end
 
-  def delete key
-    @map.delete(key)
-    @keys.delete(key)
-  end
 
-  def initialize hash = {}
-    @default = nil # default miss value is nil
-    @echo = echo
-    @keys = hash.keys
-    @map = hash
-    @attrs = {}
-    @map.each_pair {|k, v| set_attrs k, v}
-    singleton_class = class << self; self; end
-    singleton_class.send(:define_method, :inner_get, method(:normal_inner_get))    
-    # define_singleton_method :inner_get, method(:normal_inner_get)
-  end
 
   def optimize!
     singleton_class = class << self; self; end

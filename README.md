@@ -16,7 +16,7 @@ mm['aa']  #=> ['apat']
 mm['b']   #=> ['bpat1', 'bpat2']
 mm['cob']  #=> ['bpat1', 'bpat2', 'bpat3'] # flattened one level!!!
 mm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3']
-mm['c']    #=> nil # no match
+mm['c']    #=> [] # no match
 
 
 # Change the default miss value to ease some processing forms
@@ -38,7 +38,7 @@ mm = MatchMap.new
 mm[/ab/] = "AB"
 
 # first, without echo
-mm['miss'] = nil
+mm['miss'] = []
 mm['cab']  = ['AB']
 
 #...then with echo = :always
@@ -60,6 +60,7 @@ end
 
 A MatchMap is a hash-like with the following properties:
 
+* The return value is always a (possibly empty) array
 * keys can be anything that responds to '==' (e.g., strings) or regular expressions
 * keys cannot be repeated (mirroring how a hash works, but see below about multiple values)
 * arguments are compared to non-pattern keys based on ==

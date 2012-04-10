@@ -63,7 +63,7 @@ class MatchMap
       if @echo == :onmiss
         return [*arg]
       else
-        return @default
+        return [@default].compact
       end
     end
     return rv

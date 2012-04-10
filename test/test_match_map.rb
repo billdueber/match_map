@@ -8,13 +8,13 @@ describe MatchMap do
    
   describe "when empty" do
         
-    it "should return nil (default)" do
-      @h['a'].must_equal nil
+    it "should return empty array (default)" do
+      @h['a'].must_equal []
     end
     
     it 'should allow set of default' do
       @h.default = 'def'
-      @h['a'].must_equal 'def'
+      @h['a'].must_equal ['def']
     end
     
   end
@@ -25,9 +25,9 @@ describe MatchMap do
       @h['a'].must_equal [3]
     end
         
-    it 'should still return default' do
+    it 'should still return default in an array ([] if default is nil)' do
       @h['a'] = 3
-      @h['c'].must_equal @h.default
+      @h['c'].must_equal []
     end
     
     it 'should reset a value' do
@@ -52,7 +52,7 @@ describe MatchMap do
       @h.has_key?('c').must_equal false
       @h.delete('a')
       @h.has_key?('a').must_equal false
-      @h['a'].must_equal @h.default
+      @h['a'].must_equal []
     end
   end
   
@@ -68,8 +68,8 @@ describe MatchMap do
     
     it "uses a single pattern" do
       @h[/.+a/] = 1
-      @h['b'].must_equal @h.default
-      @h['a'].must_equal @h.default
+      @h['b'].must_equal []
+      @h['a'].must_equal []
       @h['aa'].must_equal [1]
       @h['era'].must_equal [1]
     end
@@ -135,7 +135,7 @@ describe MatchMap do
     end
     
     it "echos when empty" do
-      @j['miss'].must_equal @h.default # no echoing
+      @j['miss'].must_equal [] # no echoing
       
       @j.echo = :always
       @j['miss'].must_equal ['miss']
@@ -147,7 +147,7 @@ describe MatchMap do
     it "echos when not empty" do
       @j[/a/] = 'hello'
       
-      @j['miss'].must_equal @j.default
+      @j['miss'].must_equal []
       
       @j.echo = :always
       @j['miss'].must_equal ['miss']
@@ -186,7 +186,7 @@ describe MatchMap do
     end
     
     it 'misses hard' do
-      @h[[1,2,3]].must_equal nil
+      @h[[1,2,3]].must_equal []
     end
     
   end

@@ -1,5 +1,7 @@
 require 'benchmark'
 require 'match_map'
+require 'pry'
+require 'pry-nav'
 
 h5 = {
   'a' => 'A',
@@ -20,6 +22,8 @@ end
 # @mm2[/a/] = 'AAA'
 
 iters = 100_000
+binding.pry
+
 puts "Testing #{iters} accesses"
 
 method = (defined? JRUBY_VERSION) ? :bmbm : :bm

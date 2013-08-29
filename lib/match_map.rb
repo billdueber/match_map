@@ -6,25 +6,24 @@ class MatchMap
 
   attr_accessor :default
   attr_reader   :echo
-
-  if RUBY_VERSION =~ /^1\.9/
-    require 'match_map/match_map_19'
-    include MatchMapIncludes::OnePointNine
-  else 
-    require 'match_map/match_map_18'    
-    include MatchMapIncludes::OnePointEight
-  end
   
-  def initialize h = {}
+  def initialize(h = {}, &blk)
     @default = nil # default miss value is nil
     @attrs = {}
+    
     # Set up the appripriate @map and define which inner_get to use
-    self.setup h
+    # initially, the non-optimized version
+    @map = {}
+    define_singleton_method :inner_get, method(:normal_inner_get)
     
     # Initialize with the given hash
     h.each_pair do |k, v| 
       self[k] = v
     end  
+    
+    if block_given?
+      blk.call(self)
+    end
     
   end
 

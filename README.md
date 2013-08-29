@@ -11,9 +11,9 @@ mm[/a/] = 'apat'
 mm[/b/] = ['bpat1', 'bpat2']
 mm[/.+b$/] = 'bpat3'
 
-mm['a'] #=> ['a_string', 'apat'] # order is the same as the key order
-mm['aa']  #=> ['apat']
-mm['b']   #=> ['bpat1', 'bpat2']
+mm['a']    #=> ['a_string', 'apat'] # order is the same as the key order
+mm['aa']   #=> ['apat']
+mm['b']    #=> ['bpat1', 'bpat2']
 mm['cob']  #=> ['bpat1', 'bpat2', 'bpat3'] # flattened one level!!!
 mm['cab']  #=> ['apat', 'bpat1', 'bpat2', 'bpat3']
 mm['c']    #=> [] # no match

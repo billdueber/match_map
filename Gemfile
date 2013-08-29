@@ -3,13 +3,6 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 
-# Add dependencies to develop your gem here.
-# Include everything needed to run rake, tests, features, etc.
-
-if RUBY_VERSION =~ /^1.8/
-  gem 'hashery'
-end
-
 
 group :documentation do
   gem "yard", "~> 0.6.0"
@@ -21,9 +14,3 @@ group :development do
   gem "jeweler", "~> 1.6.4"
 end
 
-# Don't require 'turn' to format tests, but use it if you have it
-# begin
-#   require 'turn'
-#   gem 'turn', '>=0.9.3'
-# rescue LoadError
-# end

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
-
-require File.expand_path('../lib/match_map/version', __FILE__)
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'match_map/version'
 
 
 Gem::Specification.new do |gem|

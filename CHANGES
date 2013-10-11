@@ -1,3 +1,5 @@
+3.0.0 !!!! Removed support for Ruby 1.8
+      Simplified build process
 2.0.0 !!!! THIS IS  A BIG, BACKWARDS-INCOMPATIBLE CHANGE !!!!
       MatchMap now always returns an array (possibly empty) 
       Changed to use 1.8/1.9 specific code to simplify things;

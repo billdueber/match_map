@@ -1,44 +1,40 @@
 # encoding: utf-8
-
-require 'rubygems'
-require 'bundler'
 begin
-  Bundler.setup(:default, :development)
+  require 'bundler'
+rescue LoadError => e
+  warn e.message
+  warn "Run `gem install bundler` to install Bundler."
+  exit -1
+end
+
+begin
+  Bundler.setup(:development)
 rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
+  warn e.message
+  warn "Run `bundle install` to install missing gems."
   exit e.status_code
 end
+
 require 'rake'
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "match_map"
-  gem.homepage = "http://github.com/billdueber/match_map"
-  gem.license = "MIT"
-  gem.summary = "A multimap that allows keys to match regex patterns"
-  gem.description = %Q{MatchMap is a map representing key=>value pairs but where 
-    (a) a query argument can match more than one key, and (b) the argument is compraed to the key
-    such that you can use regex patterns as keys}
-  gem.email = "bill@dueber.com"
-  gem.authors = ["Bill Dueber"]
-  # dependencies defined in Gemfile
-end
-Jeweler::RubygemsDotOrgTasks.new
+require "bundler/gem_tasks"
+
+require 'yard'
+YARD::Rake::YardocTask.new  
+task :doc => :yard
 
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
+Rake::TestTask.new do |test|
+  test.libs << 'test'
   test.pattern = 'test/**/test_*.rb'
   test.verbose = true
 end
+
+task :default => [:test]
 
 desc "Run a quick benchmark"
 task :bench do
   $: << 'lib'
   load 'bench/bench.rb'
 end
-
-task :default => :test
 
